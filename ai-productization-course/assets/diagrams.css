@@ -1,0 +1,28 @@
+.pipeline {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  margin: 18px 0;
+}
+
+.pipeline .step {
+  background: #0f1b33;
+  border: 1px solid #3b4f7a;
+  border-radius: 14px;
+  padding: 12px;
+  text-align: center;
+}
+
+.matrix {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.risk { border-left: 5px solid #fb7185; }
+.decision { border-left: 5px solid #67e8f9; }
+.eval { border-left: 5px solid #34d399; }
+
+@media (max-width: 760px) {
+  .matrix { grid-template-columns: 1fr; }
+}

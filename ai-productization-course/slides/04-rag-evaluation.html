@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAG評価設計：本番導入を判断する</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/diagrams.css">
+</head>
+<body>
+<main class="deck">
+<section class="slide cover"><p class="tag">04-rag-evaluation</p><h1>RAG評価設計：本番導入を判断する</h1><p class="lead">実務で説明・設計・評価・運用できる力へ接続する章です。</p><p>操作: ← / → キー、または下部ボタンで移動。</p></section>
+<section class="slide">
+  <h2>学習ゴール</h2>
+  <ul><li>retrieval評価とanswer評価を分離できる。</li><li>golden datasetとfailure taxonomyを設計できる。</li><li>LLM-as-a-judgeの使いどころと危険性を説明できる。</li></ul>
+</section>
+<section class="slide">
+  <h2>なぜ学ぶのか</h2>
+  <p>本番RAGでは、部品の名前を知るだけでは不十分です。ユーザー要件、データ特性、失敗時の影響から、どの設計を選ぶかを判断します。</p>
+</section>
+<section class="slide">
+  <h2>LLM/RAG評価が難しい理由</h2>
+  <p>回答は一意に決まらず、検索結果・prompt・model version・文書更新で変動します。だから評価データ、指標、ログを固定して比較します。</p>
+</section>
+<section class="slide">
+  <h2>従来ML/OCR評価との違い</h2>
+  <p>OCRは文字認識精度や項目一致率を測れます。RAGは検索が正しいか、回答が正しいか、根拠に忠実か、UXとして役立つかを分けます。</p>
+</section>
+<section class="slide">
+  <h2>評価の分解</h2>
+  <div class="pipeline"><div class="step">retrieval評価</div><div class="step">generation評価</div><div class="step">end-to-end評価</div><div class="step">UX評価</div><div class="step">business KPI</div></div>
+</section>
+<section class="slide">
+  <h2>retrieval指標</h2>
+  <ul><li>recall@k: 正解文書が上位k件に入るか。</li><li>precision@k: 上位k件の関連度。</li><li>MRR: 最初の正解順位。</li><li>nDCG: 関連度の高い文書が上位にあるか。</li><li>context precision / context recall: LLMへ渡した文脈の質。</li></ul>
+</section>
+<section class="slide">
+  <h2>answer指標</h2>
+  <ul><li>correctness: 事実として正しい。</li><li>groundedness: contextに基づく。</li><li>faithfulness: 根拠と矛盾しない。</li><li>relevance: 質問に答えている。</li><li>completeness: 必要事項が揃う。</li><li>conciseness: 過不足なく短い。</li></ul>
+</section>
+<section class="slide">
+  <h2>golden datasetの作り方</h2>
+  <pre><code>{question, user_role, expected_doc_ids, must_include_facts,
+ forbidden_claims, expected_answer, difficulty, category}</code></pre><p>簡単・難しい・権限境界・古い文書・OCRノイズを含めます。</p>
+</section>
+<section class="slide">
+  <h2>failure taxonomy</h2>
+  <p>検索漏れ、ノイズ混入、古い文書、権限違反、根拠なし生成、矛盾、過剰回答、形式違反に分類すると改善担当が明確になります。</p>
+</section>
+<section class="slide">
+  <h2>LLM-as-a-judge</h2>
+  <p>大量評価の補助に有効ですが、judge prompt、評価基準、モデル変更に影響されます。合否の最終判断は人間評価やサンプル監査と組み合わせます。</p>
+</section>
+<section class="slide">
+  <h2>judge promptとバイアス</h2>
+  <pre><code>あなたは評価者です。回答がcontextに含まれる根拠だけで
+質問に答えているかを1-5で採点し、根拠文を引用せず理由を述べる。</code></pre><p>長い回答を高評価しがち、権威ある文体に騙される等のバイアスに注意します。</p>
+</section>
+<section class="slide">
+  <h2>regression test / red teaming / 本番ログ改善</h2>
+  <p>promptやindex更新のたびにgolden datasetで回帰評価し、悪意ある質問や権限境界をred teamingします。本番ログは匿名化し、失敗例をgolden datasetへ昇格します。</p>
+</section>
+<section class="slide">
+  <h2>OCR/画像AI経験との接続</h2>
+  <p>OCRの前処理、信頼度、誤差分析、項目一致率の考え方は、RAGの文書整形、metadata、failure taxonomy、評価設計へ転用できます。</p>
+</section>
+<section class="slide">
+  <h2>面接・職務経歴書での語り方</h2>
+  <p>「モデル精度だけでなく、データ品質・検索品質・生成の忠実性・運用監視まで分解して改善できます」と、担当範囲をプロダクト品質に広げて表現します。</p>
+</section>
+<section class="slide">
+  <h2>ミニ演習</h2>
+  <p>名刺OCR + 社内CRM検索RAGについて、代表質問、正解文書、retrieval指標、answer指標、失敗分類、改善サイクルを設計する。</p>
+</section>
+<section class="slide">
+  <h2>まとめ</h2>
+  <ul><li>技術要素は必ず業務要件と失敗リスクに紐づけて選ぶ。</li><li>RAG品質は検索、生成、評価、運用の掛け算で決まる。</li><li>OCR経験者はノイズと評価を扱える点が強みになる。</li></ul>
+</section>
+<section class="slide">
+  <h2>確認問題</h2>
+  <ol><li>この章の主要技術を3つ挙げ、それぞれの実務判断を説明してください。</li><li>典型的な失敗例を2つ挙げ、検知方法と改善策を述べてください。</li><li>OCR/画像AI経験と接続できる点を1つ説明してください。</li></ol>
+</section>
+</main>
+<footer class="progress">
+  <a class="button" href="../index.html">トップ</a>
+  <button class="button" data-prev>←</button>
+  <button class="button" data-next>→</button>
+  <div class="bar"><span></span></div>
+  <span id="count"></span>
+</footer>
+<script src="../assets/slide.js"></script>
+</body>
+</html>
