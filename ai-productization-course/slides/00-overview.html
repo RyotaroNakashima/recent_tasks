@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>全体地図：OCR/画像AIからLLMプロダクト化へ</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/diagrams.css">
+</head>
+<body>
+<main class="deck">
+<section class="slide cover"><p class="tag">00-overview</p><h1>全体地図：OCR/画像AIからLLMプロダクト化へ</h1><p class="lead">実務で説明・設計・評価・運用できる力へ接続する章です。</p><p>操作: ← / → キー、または下部ボタンで移動。</p></section>
+<section class="slide">
+  <h2>学習ゴール</h2>
+  <ul><li>LLM/RAG/MLOpsを学ぶ理由を市場価値と実務責任の観点で説明できる。</li><li>OCR/画像AI経験を、LLMアプリ設計・評価・運用へ接続して語れる。</li><li>本教材で扱う範囲と、次回以降に回すAgent/MCP/ガバナンス等の境界を理解する。</li></ul>
+</section>
+<section class="slide">
+  <h2>なぜ今LLM/RAG/MLOpsを学ぶのか</h2>
+  <p>企業導入で求められるのは「モデルを試す人」ではなく、業務データ、権限、評価、運用まで含めてAIを業務に載せる人です。</p><div class="grid"><div class="card decision"><h3>実務判断</h3><p>LLMの性能だけで採用判断しない。データ鮮度、根拠提示、監査ログ、費用上限を満たせるかで判断する。</p></div><div class="card risk"><h3>失敗例</h3><p>デモでは便利だが、更新されない社内文書・権限漏れ・回答の根拠不明で本番停止になる。</p></div></div>
+</section>
+<section class="slide">
+  <h2>OCR/画像AIエンジニアから伸ばす自然なルート</h2>
+  <p>OCRでは入力品質、前処理、モデル、後処理、評価を分けて改善します。RAGも同じく、文書整形、chunking、retrieval、generation、評価、運用を分解します。</p><div class="pipeline"><div class="step">画像前処理</div><div class="step">OCR</div><div class="step">構造化</div><div class="step">検索</div><div class="step">生成</div><div class="step">監視</div></div>
+</section>
+<section class="slide">
+  <h2>モデルを作る人からAIを業務に載せる人へ</h2>
+  <ul><li>モデル単体: 精度指標、推論速度、学習データ。</li><li>LLMアプリ: ユーザー権限、文書鮮度、プロンプト、検索品質、コスト、ログ、fallback。</li><li>面接では「精度改善」だけでなく「本番で壊れない設計」を語る。</li></ul>
+</section>
+<section class="slide">
+  <h2>今回扱う範囲</h2>
+  <ul><li>LLMアプリとRAGの基本構造</li><li>retrieval設計: chunking、embedding、vector DB、metadata、reranking</li><li>generation設計: prompt、citation、grounding、structured output</li><li>評価設計: golden dataset、retrieval評価、answer評価、LLM-as-a-judge</li><li>LLMOps: API、Docker、ログ、監視、コスト、rollback</li></ul>
+</section>
+<section class="slide">
+  <h2>今回あえて深掘りしない範囲</h2>
+  <ul><li>Agent詳細: tool planningやmulti-agentは次段階。</li><li>MCP: ツール接続の標準化として紹介に留める。</li><li>AIガバナンス: リスク管理の入口のみ。</li><li>クラウド詳細: AWS/GCP/Azure固有構成は扱わない。</li><li>データエンジニアリング詳細: ETL基盤は概念レベル。</li></ul>
+</section>
+<section class="slide">
+  <h2>学習後の到達イメージ</h2>
+  <p>「RAGを作りました」ではなく、なぜそのchunkingか、なぜそのmetadataか、どう評価し、障害時に何を切り分けるかを説明できる状態を目指します。</p><pre><code>設計説明 = 要件 + データ特性 + 検索戦略 + 生成制御 + 評価 + 運用</code></pre>
+</section>
+<section class="slide">
+  <h2>推奨学習順</h2>
+  <ol><li>00で地図を掴む。</li><li>01でRAG全体構造を理解する。</li><li>02-03でretrievalとgenerationを分けて設計する。</li><li>04で評価可能な形に落とす。</li><li>05で本番運用の最低ラインを確認する。</li><li>06-07でケースとアウトプットへ変換する。</li></ol>
+</section>
+<section class="slide">
+  <h2>面接・職務経歴書での語り方</h2>
+  <p>「OCRの誤差分析を、RAGのretrieval/generation評価分離に応用できます。入力ノイズ、前処理、後段の業務影響まで見て改善できます」と語る。</p><div class="note">年収800万円以上を狙うなら、技術名の羅列ではなく、品質保証・運用・事業影響まで設計できることを示す。</div>
+</section>
+<section class="slide">
+  <h2>ミニ演習</h2>
+  <p>自分のOCR案件を1つ選び、LLM/RAG化した場合の「業務価値」「入れるデータ」「検索時の権限」「評価指標」「運用リスク」を5行で書く。</p>
+</section>
+<section class="slide">
+  <h2>まとめ</h2>
+  <ul><li>LLM/RAGはモデルだけでなく業務システムである。</li><li>OCR経験は、ノイズ・評価・パイプライン分解の強みとして転用できる。</li><li>本教材では設計判断、評価、運用まで一気通貫で扱う。</li></ul>
+</section>
+<section class="slide">
+  <h2>確認問題</h2>
+  <ol><li>LLM/RAG/MLOpsを今学ぶべき理由を、企業導入の観点で説明してください。</li><li>OCR経験からRAGに転用できる考え方を3つ挙げてください。</li><li>本教材であえて深掘りしないテーマを2つ挙げてください。</li></ol>
+</section>
+</main>
+<footer class="progress">
+  <a class="button" href="../index.html">トップ</a>
+  <button class="button" data-prev>←</button>
+  <button class="button" data-next>→</button>
+  <div class="bar"><span></span></div>
+  <span id="count"></span>
+</footer>
+<script src="../assets/slide.js"></script>
+</body>
+</html>

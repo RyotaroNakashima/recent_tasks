@@ -1,0 +1,1 @@
+{"scripts":{"goal":"python3 checks/validate_course.py","validate":"python3 checks/validate_course.py"}}

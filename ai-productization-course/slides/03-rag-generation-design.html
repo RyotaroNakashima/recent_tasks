@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generation設計：根拠に忠実な回答を作る</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/diagrams.css">
+</head>
+<body>
+<main class="deck">
+<section class="slide cover"><p class="tag">03-rag-generation-design</p><h1>Generation設計：根拠に忠実な回答を作る</h1><p class="lead">実務で説明・設計・評価・運用できる力へ接続する章です。</p><p>操作: ← / → キー、または下部ボタンで移動。</p></section>
+<section class="slide">
+  <h2>学習ゴール</h2>
+  <ul><li>prompt constructionとcontext packingを説明できる。</li><li>grounding、faithfulness、hallucinationを区別できる。</li><li>citation、回答不能判定、structured outputを設計できる。</li></ul>
+</section>
+<section class="slide">
+  <h2>なぜ学ぶのか</h2>
+  <p>本番RAGでは、部品の名前を知るだけでは不十分です。ユーザー要件、データ特性、失敗時の影響から、どの設計を選ぶかを判断します。</p>
+</section>
+<section class="slide">
+  <h2>prompt construction</h2>
+  <p>system promptで役割・禁止事項・回答形式を固定し、user promptで質問を渡し、contextには検索結果とmetadataを構造化して入れます。</p>
+</section>
+<section class="slide">
+  <h2>system prompt / user prompt</h2>
+  <pre><code>System: 根拠に含まれない内容は推測しない。回答にはcitationを付ける。
+User: {question}
+Context: [{doc_id, title, updated_at, text}]</code></pre>
+</section>
+<section class="slide">
+  <h2>context packing</h2>
+  <p>top-kをそのまま詰め込むと重要箇所が埋もれます。重複除去、権限確認、最新文書優先、長すぎるchunkの要約を検討します。</p>
+</section>
+<section class="slide">
+  <h2>citation設計</h2>
+  <p>回答文のどの主張がどの文書に基づくかを示します。OCR文書ではページ、領域、OCR信頼度も表示すると確認しやすくなります。</p>
+</section>
+<section class="slide">
+  <h2>回答不能判定と「知らない」と言わせる設計</h2>
+  <p>根拠が不足する時は回答しないことを仕様にします。検索スコア閾値、根拠数、矛盾検出を使い、fallbackとして問い合わせ先や確認依頼を出します。</p>
+</section>
+<section class="slide">
+  <h2>grounding / faithfulness / hallucination</h2>
+  <ul><li>grounding: 回答が提供contextに基づく度合い。</li><li>faithfulness: 根拠に忠実で矛盾しない度合い。</li><li>hallucination: 根拠なしの断定、数字の捏造、存在しない規程の引用。</li></ul>
+</section>
+<section class="slide">
+  <h2>structured output / JSON schema</h2>
+  <p>後段システムへ渡す場合はJSON schemaで型を固定します。自由文より検証・再試行・監査が容易です。</p>
+</section>
+<section class="slide">
+  <h2>function callingとの接続</h2>
+  <p>RAGだけで答えず、在庫照会、CRM更新、メール下書きなどは関数呼び出しへ分離します。副作用がある操作は人間確認を挟みます。</p>
+</section>
+<section class="slide">
+  <h2>ユーザー権限に応じた回答制御</h2>
+  <p>retrievalで権限filterし、generationでも「表示可能な根拠のみで答える」制約を入れます。権限外情報の存在を示唆しないUIも重要です。</p>
+</section>
+<section class="slide">
+  <h2>長文/短文回答と日本語RAG</h2>
+  <p>日本語では敬語、曖昧な主語、表記揺れが問題になります。回答長、箇条書き、要約レベルを明示し、引用箇所と推論を分離します。</p>
+</section>
+<section class="slide">
+  <h2>OCRノイズが生成に与える影響</h2>
+  <p>「0/O」「1/l」などの誤認識は会社名、金額、日付の誤回答に直結します。低信頼OCRは断定せず、確認を促すプロンプトにします。</p>
+</section>
+<section class="slide">
+  <h2>OCR/画像AI経験との接続</h2>
+  <p>OCRの前処理、信頼度、誤差分析、項目一致率の考え方は、RAGの文書整形、metadata、failure taxonomy、評価設計へ転用できます。</p>
+</section>
+<section class="slide">
+  <h2>面接・職務経歴書での語り方</h2>
+  <p>「モデル精度だけでなく、データ品質・検索品質・生成の忠実性・運用監視まで分解して改善できます」と、担当範囲をプロダクト品質に広げて表現します。</p>
+</section>
+<section class="slide">
+  <h2>ミニ演習</h2>
+  <p>社内文書RAG用promptを作り、根拠なし回答禁止、citation必須、回答不能時の文言、JSON出力形式を追加して改善する。</p>
+</section>
+<section class="slide">
+  <h2>まとめ</h2>
+  <ul><li>技術要素は必ず業務要件と失敗リスクに紐づけて選ぶ。</li><li>RAG品質は検索、生成、評価、運用の掛け算で決まる。</li><li>OCR経験者はノイズと評価を扱える点が強みになる。</li></ul>
+</section>
+<section class="slide">
+  <h2>確認問題</h2>
+  <ol><li>この章の主要技術を3つ挙げ、それぞれの実務判断を説明してください。</li><li>典型的な失敗例を2つ挙げ、検知方法と改善策を述べてください。</li><li>OCR/画像AI経験と接続できる点を1つ説明してください。</li></ol>
+</section>
+</main>
+<footer class="progress">
+  <a class="button" href="../index.html">トップ</a>
+  <button class="button" data-prev>←</button>
+  <button class="button" data-next>→</button>
+  <div class="bar"><span></span></div>
+  <span id="count"></span>
+</footer>
+<script src="../assets/slide.js"></script>
+</body>
+</html>

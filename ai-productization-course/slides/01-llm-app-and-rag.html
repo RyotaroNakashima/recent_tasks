@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LLMアプリケーションとRAGの全体構造</title>
+  <link rel="stylesheet" href="../assets/style.css">
+  <link rel="stylesheet" href="../assets/diagrams.css">
+</head>
+<body>
+<main class="deck">
+<section class="slide cover"><p class="tag">01-llm-app-and-rag</p><h1>LLMアプリケーションとRAGの全体構造</h1><p class="lead">実務で説明・設計・評価・運用できる力へ接続する章です。</p><p>操作: ← / → キー、または下部ボタンで移動。</p></section>
+<section class="slide">
+  <h2>学習ゴール</h2>
+  <ul><li>LLM単体アプリとRAGアプリの違いを説明できる。</li><li>ingestionからloggingまでのRAG基本パイプラインを描ける。</li><li>OCR結果をRAGへ接続する時のデータ設計を説明できる。</li></ul>
+</section>
+<section class="slide">
+  <h2>なぜRAGを学ぶのか</h2>
+  <p>LLMは学習時点にない社内情報、顧客固有情報、最新規程を知りません。RAGは外部知識を検索して、根拠付きで回答させるためのアプリ設計です。</p>
+</section>
+<section class="slide">
+  <h2>LLM単体アプリとRAGアプリの違い</h2>
+  <div class="grid"><div class="card"><h3>LLM単体</h3><ul><li>入力はユーザー質問のみ</li><li>一般知識には強い</li><li>社内固有情報は弱い</li></ul></div><div class="card"><h3>RAG</h3><ul><li>質問に関連文書を付与</li><li>根拠とcitationを出せる</li><li>検索品質が回答品質の上限になる</li></ul></div></div>
+</section>
+<section class="slide">
+  <h2>RAG基本パイプライン</h2>
+  <div class="pipeline"><div class="step">ingestion</div><div class="step">preprocessing</div><div class="step">chunking</div><div class="step">embedding</div><div class="step">indexing</div><div class="step">retrieval</div><div class="step">reranking</div><div class="step">prompt construction</div><div class="step">generation</div><div class="step">citation</div><div class="step">logging</div></div>
+</section>
+<section class="slide">
+  <h2>社内文書検索の具体例</h2>
+  <p>質問「育児休業の申請期限は？」に対して、人事規程・FAQ・最新通知を検索し、該当箇所だけをcontextに入れる。古い規程を除外するmetadataが重要です。</p>
+</section>
+<section class="slide">
+  <h2>OCR結果をRAGに接続する例</h2>
+  <p>名刺OCRなら、氏名・会社名・部署・メールだけでなく、OCR信頼度、画像ID、確認済みフラグ、更新日時をmetadata化します。</p><pre><code>{"source":"business_card_ocr","company":"ABC商事","ocr_confidence":0.91,"verified":true}</code></pre>
+</section>
+<section class="slide">
+  <h2>代表的ユースケース</h2>
+  <ul><li>社内FAQ・規程検索</li><li>CRM/商談メモ検索</li><li>設計書・障害報告書検索</li><li>問い合わせ一次回答</li><li>OCR済み帳票・契約書の横断検索</li></ul>
+</section>
+<section class="slide">
+  <h2>RAGが苦手なケース</h2>
+  <ul><li>根拠文書自体が存在しない質問</li><li>文書が古く矛盾している領域</li><li>厳密な数値計算やDB集計が必要な質問</li><li>権限が複雑で検索前filterが設計されていないケース</li></ul>
+</section>
+<section class="slide">
+  <h2>「RAGを入れれば解決」という誤解</h2>
+  <p>RAGは魔法ではありません。文書品質が悪い、chunkが不適切、評価データがない、権限設計がない場合、むしろ誤回答を根拠付きに見せてしまいます。</p>
+</section>
+<section class="slide">
+  <h2>実務で効く判断</h2>
+  <ul><li>FAQなら質問単位、規程なら条文単位、議事録なら議題単位でchunkを変える。</li><li>更新頻度が高い文書はindex更新SLAを定義する。</li><li>citationをUIに出し、人間が確認できる設計にする。</li></ul>
+</section>
+<section class="slide">
+  <h2>面接・職務経歴書での語り方</h2>
+  <p>「OCRの構造化結果をRAGのmetadataとして扱い、検索漏れ・誤検索・誤回答を分けて改善できます」と説明する。</p>
+</section>
+<section class="slide">
+  <h2>ミニ演習</h2>
+  <p>名刺OCRシステムをRAGに拡張するなら、名刺情報、CRM、商談メモ、企業ニュース、問い合わせ履歴のうち何を入れるか、何を入れないかを理由付きで決める。</p>
+</section>
+<section class="slide">
+  <h2>まとめ</h2>
+  <ul><li>RAGは検索と生成とログを持つアプリケーション設計である。</li><li>社内固有情報・最新情報・根拠提示に強い。</li><li>データ品質、権限、評価なしのRAGは本番で破綻する。</li></ul>
+</section>
+<section class="slide">
+  <h2>確認問題</h2>
+  <ol><li>LLM単体アプリとRAGアプリの違いを説明してください。</li><li>RAG基本パイプラインを順番に挙げてください。</li><li>名刺OCRをRAG化する時にmetadataへ入れるべき項目を3つ挙げてください。</li></ol>
+</section>
+</main>
+<footer class="progress">
+  <a class="button" href="../index.html">トップ</a>
+  <button class="button" data-prev>←</button>
+  <button class="button" data-next>→</button>
+  <div class="bar"><span></span></div>
+  <span id="count"></span>
+</footer>
+<script src="../assets/slide.js"></script>
+</body>
+</html>
